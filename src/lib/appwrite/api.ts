@@ -86,3 +86,13 @@ export async function getCurrentUser() {
         console.log(error);
     }
 }
+
+export async function signOutAccount() {
+    try {
+        const session = await account.deleteSession("current");
+
+        return session;
+    } catch(err) {
+        console.log(err);
+    }
+}
