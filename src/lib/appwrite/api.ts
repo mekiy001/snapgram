@@ -105,7 +105,7 @@ export async function createPost(post: INewPost){
             throw Error;
         }
 
-        const fileUrl =  await getFilePreview(uploadedFile.$id);
+        const fileUrl = getFilePreview(uploadedFile.$id);
 
         if (!fileUrl) {
             deleteFile(uploadedFile.$id);
@@ -152,7 +152,7 @@ export async function uploadFile(file: File) {
     }
 }
 
-export async function getFilePreview(fileId: string) {
+export function getFilePreview(fileId: string) {
     try {
         const fileUrl = storage.getFilePreview(
             appwriteConfig.storageId,
@@ -174,6 +174,28 @@ export async function deleteFile(fileId: string) {
         await storage.deleteFile(appwriteConfig.storageId, fileId);
 
         return { status: 'ok'};
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+export async function getRecentPost(){
+    const posts = await databases.listDocuments(
+        appwriteConfig.databaseId,
+        appwriteConfig.postCollectionId,
+        [Query.orderDesc('$createdAt'), Query.limit(20)]
+    )
+
+    if (!posts) {
+        throw Error;
+    }
+
+    return posts;
+}
+
+export async function likePost(postId: string, likesArray: string[]) {
+    try {
+        
     } catch (error) {
         console.log(error);
     }
