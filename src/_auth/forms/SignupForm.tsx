@@ -21,14 +21,15 @@ import { z } from "zod";
 import { useToast } from "@/hooks/use-toast"
 import { useCreateUserAccountMutation, useSignInAccount } from "../../lib/react-query/queriesAndMutations";
 import { useUserContext } from "../../context/AuthContext";
+import Loader from "../../components/shared/Loader";
 
 function SignupForm() {
     const { toast } = useToast()
     const { checkAuthUser, isLoading: isUserLoading } = useUserContext();
     const navigate = useNavigate();
 
-    const { mutateAsync: createUserAccount, isLoading: isCreatingUser } = useCreateUserAccountMutation();
-    const { mutateAsync: signInAccount, isLoading: isSigningIn } = useSignInAccount();
+    const { mutateAsync: createUserAccount, isPending: isCreatingUser } = useCreateUserAccountMutation();
+    const { mutateAsync: signInAccount, isPending: isSigningIn } = useSignInAccount();
 
 
       // 1. Define your form.
@@ -135,7 +136,13 @@ function SignupForm() {
                   </FormItem>
                 )}
               />
-              <Button type="submit" className="shad-button_primary">Submit</Button>
+              <Button type="submit" className="shad-button_primary">
+                {isCreatingUser ? (
+                  <div className="flex-center gap-2">
+                    <Loader /> Loading...
+                  </div>
+                ) : "Sign Up"}
+              </Button>
               <p className="text-small-regular text-light-2 text-center mt-2">
                 Already have an account?
                 <Link to="/sign-in" className="text-primary-500 text-small-semibold ml-1">Log in</Link>
